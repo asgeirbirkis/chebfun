@@ -219,9 +219,9 @@ classdef chebfun
                 [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
                 
                 % Update values at breakpoints (first row of f.pointValues):
-                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, ...
-                    f.domain, op);
-                
+%                 f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, ...
+%                     f.domain, op);
+                f.pointValues = [1;0];
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
                 f = merge(f, index(:).', pref);
@@ -944,6 +944,10 @@ end
 
 try
     % Evaluate a vector of (near the) endpoints
+    if y(end) == inf
+        y(end) = 100;
+    end
+    
     v = op(y);
     
     % Get the size of the output:

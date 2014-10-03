@@ -113,7 +113,7 @@ classdef unbndfun < classicfun
                 % 1].  Try to detect this by seeing if the function is infinite
                 % at either endpoint and, if so, enable singularity detection.
                 lVal = feval(op, -1);
-                rVal = feval(op, 1);
+                rVal = feval(op, 1-1e-8);
                 if ( any(isinf([lVal rVal])) )
                     pref.blowup = true;
                     singType = pref.blowupPrefs.defaultSingType;
