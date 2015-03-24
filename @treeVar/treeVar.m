@@ -98,7 +98,9 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         height = 0;
         ID
         hasTerms = 0;
+        left
         center
+        right
         % The domain of the problem we're solving when constructing the
         % TREEVAR objects.
         domain
@@ -128,7 +130,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = abs(f)
-            f.tree = f.univariate(f.tree, 'abs');
+            f = univariate(f, 'abs');
         end
         
         function f = acos(f)
@@ -256,13 +258,18 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
             
             % The derivative syntax tree.
-            f.tree = struct('method', 'diff', 'numArgs', 2, ...
-                'left', f.tree, 'right', k, ...
-                'diffOrder', f.tree.diffOrder + k*f.tree.ID, ...
-                'height', f.tree.height + 1, ...
-                'ID', f.tree.ID, ...
-                'multCoeff', f.tree.multCoeff, ...
-                'hasTerms', f.tree.hasTerms);
+            f.left = f;
+            f.right = k;
+            f.method = 'diff';
+            f.diffOrder = f.diffOrder + k*f.ID;
+            f.numArgs = 2;
+%             f.tree = struct('method', 'diff', 'numArgs', 2, ...
+%                 'left', f.tree, 'right', k, ...
+%                 'diffOrder', f.tree.diffOrder + k*f.tree.ID, ...
+%                 'height', f.tree.height + 1, ...
+%                 'ID', f.tree.ID, ...
+%                 'multCoeff', f.tree.multCoeff, ...
+%                 'hasTerms', f.tree.hasTerms);
         end
         
         function disp(u)
@@ -270,10 +277,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             
             if ( length(u) == 1 )
                 % Scalar case.
-                disp('treeVar with tree:')
-                disp(u.tree);
-                disp('and the domain:')
-                disp(u.domain);
+%                 disp('treeVar with tree:')
+%                 disp(u.tree);
+%                 disp('and the domain:')
+%                 disp(u.domain);
+                    details(u)
             else
                 % Systems case.
                 disp('Array-valued treeVar, with trees:');
@@ -377,7 +385,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             %PLOT   Plot of a TREEVAR syntax tree.
             %
             % See also TREEVAR.PLOTTREE.
-            treeVar.plotTree(treeVar.tree);
+            treeVar.plotTree(treeVar);
         end
         
         function h = plus(f, g)
@@ -391,7 +399,21 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 h.tree = treeVar.bivariate(f.tree, g, 'plus', 0);
             else
                 % TREEVAR + TREEVAR
-                h.tree = treeVar.bivariate(f.tree, g.tree, 'plus', 2);
+                h.left = f;
+                h.right = g;
+                h.diffOrder = max(f.diffOrder, g.diffOrder);
+                h.height = max(f.height, g.height) + 1;
+                h.hasTerms = f.hasTerms || g.hasTerms;
+                h.method = 'plus';
+                h.numArgs = 2;
+%         treeOut = struct('method', method, 'numArgs', 2, ...
+%             'left', leftTree, 'right', rightTree, ...
+%             'diffOrder', max(leftTree.diffOrder, rightTree.diffOrder), ...
+%             'ID', leftTree.ID | rightTree.ID, ...
+%             'height', max(leftTree.height, rightTree.height) + 1, ...
+%             'hasTerms', isPM || leftTree.hasTerms || rightTree.hasTerms);
+
+%                 h.tree = treeVar.bivariate(f.tree, g.tree, 'plus', 2);
             end
             h.domain = updateDomain(f, g);
         end
@@ -400,7 +422,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             %PRINT   Text rendering of a TREEVAR syntax tree.
             %
             % See also TREEVAR.PRINTTREE.
-            s = treeVar.printTree(treeVar.tree);
+            s = treeVar.printTree(treeVar);
         end
         
         function h = rdivide(f, g)
@@ -432,11 +454,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
 
         function f = sin(f)
-%             f = univariate(f, 'sin');
-            f.center = f;
-            f.method = 'sin';
-            f.numArgs = 1;
-            f.height = f.height + 1;
+            f = univariate(f, 'sin');
+%             f.center = f;
+%             f.method = 'sin';
+%             f.numArgs = 1;
+%             f.height = f.height + 1;
         end
         
         function f = sind(f)
@@ -469,8 +491,21 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             % Initialize an empty TREEVAR
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
-                % (CHEBFUN/SCALAR).^*TREEVAR
-                h.tree = treeVar.bivariate(f, g.tree, 'times', 1);
+                % (CHEBFUN/SCALAR).*TREEVAR
+                h = g;
+                h.method = 'times';
+                h.numArgs = 2;
+                h.left = f;
+                h.right = g;
+                h.height = h.height + 1;
+                
+%                 treeOut = struct('method', method, 'numArgs', 2, ...
+%                     'left', leftTree, 'right', rightTree, ...
+%                     'diffOrder', rightTree.diffOrder, ...
+%                     'height', rightTree.height + 1, ...
+%                     'ID', rightTree.ID, ...
+%                     'hasTerms', isPM || rightTree.hasTerms);
+%                 h.tree = treeVar.bivariate(f, g.tree, 'times', 1);
             elseif ( ~isa(g, 'treeVar') )
                 % TREEVAR.*(CHEBFUN/SCALAR)
                 h.tree = treeVar.bivariate(f.tree, g, 'times', 0);

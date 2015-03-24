@@ -89,9 +89,8 @@ switch tree.numArgs
         s = [ s, treeVar.printTree(tree.center, [indentStr, ' ']) ];
     
     case 2
-        % Printing bivariate methods.
-        
-        if ( isstruct(tree.left) )
+        % Printing bivariate methods.       
+        if ( isa(tree.left, 'treeVar') )
             % If the left child is a tree, print it recursively:
             s = [ s, treeVar.printTree(tree.left, [indentStr, '|']) ];
         elseif ( isnumeric(tree.left) )
@@ -103,7 +102,7 @@ switch tree.numArgs
             s = [ s, fprintf('%s|--chebfun\n', indentStr) ];
         end
         
-        if ( isstruct(tree.right) )
+        if ( isa(tree.right, 'treeVar') )
             % If the right child is a tree, print it recursively:
             s = [ s, treeVar.printTree(tree.right, [indentStr, ' ']) ];
         elseif ( isnumeric(tree.right) )

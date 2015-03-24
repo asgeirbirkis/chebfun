@@ -23,7 +23,7 @@ diffVar = maxOrder > 0;
 
 % If our input is not a syntax tree, we can be certain we don't need to split it
 % (this can e.g. happen if TREE is a CHEBFUN or a scalar).
-if ( ~isstruct(tree) )
+if ( ~isa(tree, 'treeVar') )
     newTree = tree;
     derTree = [];
     return

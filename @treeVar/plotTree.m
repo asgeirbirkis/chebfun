@@ -55,7 +55,7 @@ end
 function tree = layoutNodes(tree, treex, deltax, currHeight, maxHeight)
 %LAYOUTNODES   Return coordinates for where to plot nodes of syntax trees.
 
-if ( ~isstruct(tree) )
+if ( ~isa(tree, 'treeVar') )
     % In case of scalars or CHEBFUNS appearing in the expression, the
     % corresponding nodes will not be syntax trees. Need to treat this case
     % separately.

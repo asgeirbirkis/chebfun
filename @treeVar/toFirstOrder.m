@@ -109,7 +109,7 @@ problemDom = union(problemDom, rhs.domain);
 totalDiffOrders = zeros(1, numArgs);
 for wCounter = 1:length(fevalResult)
     totalDiffOrders = max(totalDiffOrders, ...
-        fevalResult(wCounter).tree.diffOrder);
+        fevalResult(wCounter).diffOrder);
 end
 
 % We always start indexing the first variable and its derivative(s) at 1. The
@@ -135,7 +135,7 @@ for wCounter = 1:length(fevalResult)
     res = fevalResult(wCounter);
     
     % Current diffOrders
-    diffOrders = res.tree.diffOrder;
+    diffOrders = res.diffOrder;
     
     % Ensure that we never have the highest derivatives of more than one
     % variable appearing in a single equation:
@@ -148,7 +148,7 @@ for wCounter = 1:length(fevalResult)
     
     % Expand the tree, so that PLUS rather than TIMES is sitting at the top of
     % it.
-    expTree = treeVar.expandTree(res.tree, totalDiffOrders);
+    expTree = treeVar.expandTree(res, totalDiffOrders);
     
     % Split the tree into derivative part and non-derivative part.
     [newTree, derTree] = treeVar.splitTree(expTree, totalDiffOrders);
