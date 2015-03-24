@@ -68,7 +68,7 @@ idx = treeVar.sortConditions(icFun, dom);
 pass(10) = all( idx == correct );
 
 %% Unsupported format, multiplying unknown function
-icFun = @(x,u) 5*u -1;
+icFun = @(x,u) 5*u - 1;
 try
     treeVar.sortConditions(icFun, dom);
 catch ME
@@ -79,7 +79,7 @@ catch ME
 end
 
 %% Unsupported format, multiplying derivative of unknown function
-icFun = @(x,u) 5*diff(u) -1;
+icFun = @(x,u) 5*diff(u) - 1;
 try
     treeVar.sortConditions(icFun, dom);
 catch ME

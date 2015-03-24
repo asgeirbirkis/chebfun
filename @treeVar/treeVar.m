@@ -262,6 +262,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.right = k;
             f.method = 'diff';
             f.diffOrder = f.diffOrder + k*f.ID;
+            f.height = f.height + 1;
             f.numArgs = 2;
 %             f.tree = struct('method', 'diff', 'numArgs', 2, ...
 %                 'left', f.tree, 'right', k, ...
@@ -323,13 +324,31 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR) - TREEVAR
-                h.tree = treeVar.bivariate(f, g.tree, 'minus', 1);
+                h = g;
+                h.left = f;
+                h.right = g;
+                h.height = h.height + 1;
+                h.hasTerms = 1;
+                h.method = 'minus';
+                h.numArgs = 2;
             elseif ( ~isa(g, 'treeVar') )
                 % TREEVAR - (CHEBFUN/SCALAR)
-                h.tree = treeVar.bivariate(f.tree, g, 'minus', 0);
+                h = f;
+                h.left = f;
+                h.right = g;
+                h.height = h.height + 1;
+                h.hasTerms = 1;
+                h.method = 'minus';
+                h.numArgs = 2;
             else
                 % TREEVAR - TREEVAR
-                h.tree = treeVar.bivariate(f.tree, g.tree, 'minus', 2);
+                h.left = f;
+                h.right = g;
+                h.diffOrder = max(f.diffOrder, g.diffOrder);
+                h.height = max(f.height, g.height) + 1;
+                h.hasTerms = 1;
+                h.method = 'minus';
+                h.numArgs = 2;
             end
             h.domain = updateDomain(f, g);
         end
@@ -370,13 +389,31 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR).^TREEVAR
-                h.tree = treeVar.bivariate(f, g.tree, 'power', 1);
+                h = g;
+                h.left = f;
+                h.right = g;
+                h.height = h.height + 1;
+                h.method = 'power';
+                h.numArgs = 2;
             elseif ( ~isa(g, 'treeVar') )
                 % TREEVAR.^(CHEBFUN/SCALAR)
-                h.tree = treeVar.bivariate(f.tree, g, 'power', 0);
+                h = f;
+                h.left = f;
+                h.right = g;
+                h.height = h.height + 1;
+                h.hasTerms = 1;
+                h.method = 'power';
+                h.numArgs = 2;
             else
                 % TREEVAR.^TREEVAR
-                h.tree = treeVar.bivariate(f.tree, g.tree, 'power', 2);
+                h.left = f;
+                h.right = g;
+                h.ID = f.ID | g.ID;
+                h.diffOrder = max(f.diffOrder, g.diffOrder);
+                h.height = max(f.height, g.height) + 1;
+                h.hasTerms = f.hasTerms || g.hasTerms;
+                h.method = 'power';
+                h.numArgs = 2;
             end
             h.domain = updateDomain(f, g);
         end
@@ -390,30 +427,36 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         function h = plus(f, g)
             %+   Addition of TREEVAR objects.
-            h = treeVar();
+
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR)+TREEVAR
-                h.tree = treeVar.bivariate(f, g.tree, 'plus', 1);
+                h = g;
+                h.left = f;
+                h.right = g;
+                h.height = h.height + 1;
+                h.hasTerms = 1;
+                h.method = 'plus';
+                h.numArgs = 2;
             elseif ( ~isa(g, 'treeVar') )
                 % TREEVAR + (CHEBFUN/SCALAR)
-                h.tree = treeVar.bivariate(f.tree, g, 'plus', 0);
+                h = f;
+                h.left = f;
+                h.right = g;
+                h.height = h.height + 1;
+                h.hasTerms = 1;
+                h.method = 'plus';
+                h.numArgs = 2;
             else
                 % TREEVAR + TREEVAR
+                h = treeVar();
                 h.left = f;
                 h.right = g;
                 h.diffOrder = max(f.diffOrder, g.diffOrder);
                 h.height = max(f.height, g.height) + 1;
-                h.hasTerms = f.hasTerms || g.hasTerms;
+                h.hasTerms = 1;
                 h.method = 'plus';
                 h.numArgs = 2;
-%         treeOut = struct('method', method, 'numArgs', 2, ...
-%             'left', leftTree, 'right', rightTree, ...
-%             'diffOrder', max(leftTree.diffOrder, rightTree.diffOrder), ...
-%             'ID', leftTree.ID | rightTree.ID, ...
-%             'height', max(leftTree.height, rightTree.height) + 1, ...
-%             'hasTerms', isPM || leftTree.hasTerms || rightTree.hasTerms);
-
-%                 h.tree = treeVar.bivariate(f.tree, g.tree, 'plus', 2);
+                h.ID = f.ID | g.ID;
             end
             h.domain = updateDomain(f, g);
         end
@@ -427,16 +470,29 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         function h = rdivide(f, g)
             %./   Division of TREEVAR objects.
-            h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR)./TREEVAR
+                h = g;
                 h.tree = treeVar.bivariate(f, g.tree, 'rdivide', 1);
             elseif ( ~isa(g, 'treeVar') )
                 % TREEVAR./(CHEBFUN/SCALAR)
-                h.tree = treeVar.bivariate(f.tree, g, 'rdivide', 0);
+                h = f;
+                h.left = f;
+                h.right = g;
+                h.height = f.height + 1;
+                h.method = 'rdivide';
+                h.numArgs = 2;
             else
                 % TREEVAR./TREEVAR
-                h.tree = treeVar.bivariate(f.tree, g.tree, 'rdivide', 2);
+                h = treeVar();
+                h.left = f;
+                h.right = g;
+                h.ID = f.ID | g.ID;
+                h.diffOrder = max(f.diffOrder, g.diffOrder);
+                h.height = max(f.height, g.height) + 1;
+                h.hasTerms = f.hasTerms | g.hasTerms;
+                h.method = 'rdivide';
+                h.numArgs = 2;
             end
             h.domain = updateDomain(f, g);
         end
@@ -487,9 +543,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         function h = times(f, g)
             %.*   Multiplication of treeVar objects.
-            
-            % Initialize an empty TREEVAR
-            h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR).*TREEVAR
                 h = g;
@@ -498,20 +551,26 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 h.left = f;
                 h.right = g;
                 h.height = h.height + 1;
-                
-%                 treeOut = struct('method', method, 'numArgs', 2, ...
-%                     'left', leftTree, 'right', rightTree, ...
-%                     'diffOrder', rightTree.diffOrder, ...
-%                     'height', rightTree.height + 1, ...
-%                     'ID', rightTree.ID, ...
-%                     'hasTerms', isPM || rightTree.hasTerms);
-%                 h.tree = treeVar.bivariate(f, g.tree, 'times', 1);
             elseif ( ~isa(g, 'treeVar') )
                 % TREEVAR.*(CHEBFUN/SCALAR)
-                h.tree = treeVar.bivariate(f.tree, g, 'times', 0);
+                h = f;
+                h.method = 'times';
+                h.numArgs = 2;
+                h.left = f;
+                h.right = g;
+                h.height = h.height + 1;
             else
                 % TREEVAR.*TREEVAR
-                h.tree = treeVar.bivariate(f.tree, g.tree, 'times', 2);
+                % Initialize an empty TREEVAR
+                h = treeVar();
+                h.left = f;
+                h.right = g;
+                h.ID = f.ID | g.ID;
+                h.diffOrder = max(f.diffOrder, g.diffOrder);
+                h.height = max(f.height, g.height) + 1;
+                h.hasTerms = f.hasTerms || g.hasTerms;
+                h.method = 'times';
+                h.numArgs = 2;
             end
             h.domain = updateDomain(f, g);
         end
@@ -526,9 +585,19 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         % Construct syntax trees for univariate methods
         treeOut = univariate(treeIn, method)
+        
     end
     
     methods ( Access = private )
+        
+        % Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u
+        newTree = expandTree(tree, maxOrder)
+        
+        % Split syntax trees into derivative part and non-derivative part
+        [newTree, derTree] = splitTree(tree, maxOrder)
+        
+        % Convert a syntax tree to infix form
+        [infix, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
         
         function dom = updateDomain(f, g)
             %UPDATEDOMAIN   Update domain in case we encounter new breakpoints.
@@ -564,21 +633,12 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         % Construct syntax trees for bivariate methods
         treeOut = bivariate(leftTree, rightTree, method, type)
-        
-        % Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u
-        newTree = expandTree(tree, maxOrder)
-        
-        % Split syntax trees into derivative part and non-derivative part
-        [newTree, derTree] = splitTree(tree, maxOrder)
-        
+                
         % Convert the infix form of an expression to an anonymous function
         anonFun = toAnon(infix, varArray)
         
         % Convert infix expressions to anonymous function suited for ODE solvers
         funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
-        
-        % Convert a syntax tree to infix form
-        [infix, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
         
     end
 

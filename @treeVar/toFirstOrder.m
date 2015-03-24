@@ -32,7 +32,7 @@ function [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Independent variable on the domain
-t = chebfun(@(t) t, domain);
+t = chebfun([domain(1); domain(end)], domain);
 
 % We always have at least one argument to FUNIN, even in the scalar case. In the
 % system case, the first argument to funIn must be the independent time
@@ -148,10 +148,10 @@ for wCounter = 1:length(fevalResult)
     
     % Expand the tree, so that PLUS rather than TIMES is sitting at the top of
     % it.
-    expTree = treeVar.expandTree(res, totalDiffOrders);
+    expTree = expandTree(res, totalDiffOrders);
     
     % Split the tree into derivative part and non-derivative part.
-    [newTree, derTree] = treeVar.splitTree(expTree, totalDiffOrders);
+    [newTree, derTree] = splitTree(expTree, totalDiffOrders);
     
     % If newTree is empty, we only have a derivative part in the expression,
     % e.g. diff(u) = 0. We must replace it with a 0, as otherwise, we can't
@@ -169,7 +169,7 @@ for wCounter = 1:length(fevalResult)
     
     % Convert the derivative part to infix form.
     [infixDer, varArrayDer] = ...
-        treeVar.tree2infix(derTree, maxDerLoc, indexStartDer);
+        tree2infix(derTree, maxDerLoc, indexStartDer);
     
     % Convert the infix form of the expression that gives us the coefficient
     % multiplying the highest order derivative appearing in the expression to an
@@ -207,7 +207,7 @@ for wCounter = 1:length(fevalResult)
 %         'left', rhs{wCounter}, 'right', newTree);
     % Convert current expression to infix form:
     [infix, varArray] = ...
-        treeVar.tree2infix(newTree, maxDerLoc, indexStart);
+        tree2infix(newTree, maxDerLoc, indexStart);
     % Store the infix form and the variables that appeared in the anonymous
     % function.
     systemInfix{maxDerLoc} = infix;

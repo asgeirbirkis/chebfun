@@ -57,7 +57,7 @@ diffOrderList = varList;
 % Loop through the resulting syntax trees.
 for tCounter = 1:length(bcResults)
     % Current tree we're looking at:
-    tempTree = bcResults(tCounter).tree;
+    tempTree = bcResults(tCounter);
     
     % Check whether more than one variable appear in the condition, which we
     % don't support:
@@ -113,7 +113,7 @@ function accepted = acceptedCondition(tree)
 % it returns TRUE.
 
 % If TREE is not a struct, or it has height 0, it can't cause any harm:
-if ( ~isstruct(tree) || ( tree.height == 0 ) )
+if ( ~isa(tree, 'treeVar') || ( tree.height == 0 ) )
     accepted = true;
 
 % Deal with the case where the operator is + or -
@@ -129,9 +129,9 @@ elseif ( any(strcmp(tree.method, {'plus', 'minus'})) )
     % we only need to check the other. If both arguments are trees, we need
     % ensure that both don't have any IDs, and in the case that happens, check
     % the validity of each subtree.
-    if ( ~isstruct(tree.left) )
+    if ( ~isa(tree.left, 'treeVar') )
         accepted = acceptedCondition(tree.right);
-    elseif ( ~isstruct(tree.right) )
+    elseif ( ~isa(tree.right, 'treeVar') )
         accepted = acceptedCondition(tree.left);
     elseif ( any(tree.left.ID) && any(tree.right.ID) )
         accepted = false;

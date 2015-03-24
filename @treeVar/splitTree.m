@@ -63,9 +63,9 @@ switch tree.numArgs
             % We're at + or -, split the left and right children trees
             % recursively.
             [newTreeLeft, derTreeLeft] = ...
-                treeVar.splitTree(tree.left, maxOrder);
+                splitTree(tree.left, maxOrder);
             [newTreeRight, derTreeRight] = ...
-                treeVar.splitTree(tree.right, maxOrder);
+                splitTree(tree.right, maxOrder);
             
             if ( isempty(newTreeLeft) )
                 % We only had a derivative part on the left. Thus, the
