@@ -92,6 +92,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         %            w = cos(u) + u;
         %        leads to v.tree.hasTerms = 0, w.tree.hasTerms = 1.
         tree
+        method = 'constr';
+        numArgs = 0;
+        diffOrder
+        height = 0;
+        ID
+        hasTerms = 0;
+        center
         % The domain of the problem we're solving when constructing the
         % TREEVAR objects.
         domain
@@ -112,10 +119,12 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 obj.domain = [-1 1];
             end
             
+            obj.diffOrder = 0*IDvec;
+            obj.ID = logical(IDvec);
             % Initialise a syntax tree for a base variable:
-            obj.tree  = struct('method', 'constr', 'numArgs', 0, ...
-                'diffOrder', 0*IDvec, 'height', 0, 'multCoeff', 1, ...
-                'ID', logical(IDvec),'hasTerms', 0);
+%             obj.tree  = struct('method', 'constr', 'numArgs', 0, ...
+%                 'diffOrder', 0*IDvec, 'height', 0, 'multCoeff', 1, ...
+%                 'ID', logical(IDvec),'hasTerms', 0);
         end
         
         function f = abs(f)
@@ -423,7 +432,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
 
         function f = sin(f)
-            f.tree = f.univariate(f.tree, 'sin');
+%             f = univariate(f, 'sin');
+            f.center = f;
+            f.method = 'sin';
+            f.numArgs = 1;
+            f.height = f.height + 1;
         end
         
         function f = sind(f)
@@ -475,6 +488,9 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         function f = uplus(f)
             f.tree = f.univariate(f.tree, 'uplus');
         end
+        
+        % Construct syntax trees for univariate methods
+        treeOut = univariate(treeIn, method)
     end
     
     methods ( Access = private )
@@ -528,9 +544,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         % Convert a syntax tree to infix form
         [infix, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
-           
-        % Construct syntax trees for univariate methods
-        treeOut = univariate(treeIn, method)
         
     end
 
