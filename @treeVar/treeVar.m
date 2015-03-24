@@ -134,107 +134,107 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = acos(f)
-            f.tree = f.univariate(f.tree, 'acos');
+            f = univariate(f, 'acos');
         end
         
         function f = acosd(f)
-            f.tree = f.univariate(f.tree, 'acosd');
+            f = univariate(f, 'acosd');
         end
         
         function f = acot(f)
-            f.tree = f.univariate(f.tree, 'acot');
+            f = univariate(f, 'acot');
         end
         
         function f = acoth(f)
-            f.tree = f.univariate(f.tree, 'acoth');
+            f = univariate(f, 'acoth');
         end
         
         function f = acsc(f)
-            f.tree = f.univariate(f.tree, 'acsc');
+            f = univariate(f, 'acsc');
         end
         
         function f = acscd(f)
-            f.tree = f.univariate(f.tree, 'acscd');
+            f = univariate(f, 'acscd');
         end
         
         function f = acsch(f)
-            f.tree = f.univariate(f.tree, 'acsch');
+            f = univariate(f, 'acsch');
         end
         
         function f = airy(f)
-            f.tree = f.univariate(f.tree, 'airy');
+            f = univariate(f, 'airy');
         end
         
         function f = asec(f)
-            f.tree = f.univariate(f.tree, 'asec');
+            f = univariate(f, 'asec');
         end
         
         function f = asecd(f)
-            f.tree = f.univariate(f.tree, 'asecd');
+            f = univariate(f, 'asecd');
         end
         
         function f = asech(f)
-            f.tree = f.univariate(f.tree, 'asech');
+            f = univariate(f, 'asech');
         end
         
         function f = asin(f)
-            f.tree = f.univariate(f.tree, 'asin');
+            f = univariate(f, 'asin');
         end
         
         function f = asind(f)
-            f.tree = f.univariate(f.tree, 'asind');
+            f = univariate(f, 'asind');
         end
         
         function f = asinh(f)
-            f.tree = f.univariate(f.tree, 'asinh');
+            f = univariate(f, 'asinh');
         end
         
         function f = atan(f)
-            f.tree = f.univariate(f.tree, 'atan');
+            f = univariate(f, 'atan');
         end
         
         function f = atand(f)
-            f.tree = f.univariate(f.tree, 'atand');
+            f = univariate(f, 'atand');
         end
         
         function f = atanh(f)
-            f.tree = f.univariate(f.tree, 'atanh');
+            f = univariate(f, 'atanh');
         end
         
         function f = cos(f)
-            f.tree = f.univariate(f.tree, 'cos');
+            f = univariate(f, 'cos');
         end
         
         function f = cosd(f)
-            f.tree = f.univariate(f.tree, 'cosd');
+            f = univariate(f, 'cosd');
         end
         
         function f = cosh(f)
-            f.tree = f.univariate(f.tree, 'cosh');
+            f = univariate(f, 'cosh');
         end
         
         function f = cot(f)
-            f.tree = f.univariate(f.tree, 'cot');
+            f = univariate(f, 'cot');
         end
         
         function f = cotd(f)
-            f.tree = f.univariate(f.tree, 'cotd');
+            f = univariate(f, 'cotd');
         end
         
         function f = coth(f)
-            f.tree = f.univariate(f.tree, 'coth');
+            f = univariate(f, 'coth');
         end
         
         function f = csc(f)
-            f.tree = f.univariate(f.tree, 'csc');
+            f = univariate(f, 'csc');
         end
         
         function f = cscd(f)
-            f.tree = f.univariate(f.tree, 'cscd');
+            f = univariate(f, 'cscd');
         end
         
         function f = csch(f)
-            f.tree = f.univariate(f.tree, 'csch');
+            f = univariate(f, 'csch');
         end
         
         function f = cumsum(f)
@@ -295,27 +295,27 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = exp(f)
-            f.tree = f.univariate(f.tree, 'exp');
+            f = univariate(f, 'exp');
         end
         
         function f = expm1(f)
-            f.tree = f.univariate(f.tree, 'expm1');
+            f = univariate(f, 'expm1');
         end
         
         function f = log(f)
-            f.tree = f.univariate(f.tree, 'log');
+            f = univariate(f, 'log');
         end
         
         function f = log10(f)
-            f.tree = f.univariate(f.tree, 'log10');
+            f = univariate(f, 'log10');
         end
         
         function f = log2(f)
-            f.tree = f.univariate(f.tree, 'log2');
+            f = univariate(f, 'log2');
         end
         
         function f = log1p(f)
-            f.tree = f.univariate(f.tree, 'log1p');
+            f = univariate(f, 'log1p');
         end
         
         function h = minus(f, g)
@@ -362,7 +362,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = pow2(f)
-            f.tree = f.univariate(f.tree, 'pow2');
+            f = univariate(f, 'pow2');
         end
         
         function h = power(f, g)
@@ -442,15 +442,15 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = sec(f)
-            f.tree = f.univariate(f.tree, 'sec');
+            f = univariate(f, 'sec');
         end
         
         function f = secd(f)
-            f.tree = f.univariate(f.tree, 'secd');
+            f = univariate(f, 'secd');
         end
         
         function f = sech(f)
-            f.tree = f.univariate(f.tree, 'sech');
+            f = univariate(f, 'sech');
         end
 
         function f = sin(f)
@@ -462,27 +462,27 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = sind(f)
-            f.tree = f.univariate(f.tree, 'sind');
+            f = univariate(f, 'sind');
         end
         
         function f = sinh(f)
-            f.tree = f.univariate(f.tree, 'sinh');
+            f = univariate(f, 'sinh');
         end
 
         function f = sqrt(f)
-            f.tree = f.univariate(f.tree, 'sqrt');
+            f = univariate(f, 'sqrt');
         end
         
         function f = tan(f)
-            f.tree = f.univariate(f.tree, 'tan');
+            f = univariate(f, 'tan');
         end
         
         function f = tand(f)
-            f.tree = f.univariate(f.tree, 'tand');
+            f = univariate(f, 'tand');
         end
         
         function f = tanh(f)
-            f.tree = f.univariate(f.tree, 'tanh');
+            f = univariate(f, 'tanh');
         end
         
         function h = times(f, g)
@@ -517,11 +517,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = uminus(f)
-            f.tree = f.univariate(f.tree, 'uminus');
+            f = univariate(f, 'uminus');
         end
         
         function f = uplus(f)
-            f.tree = f.univariate(f.tree, 'uplus');
+            f = univariate(f, 'uplus');
         end
         
         % Construct syntax trees for univariate methods

@@ -199,8 +199,12 @@ for wCounter = 1:length(fevalResult)
     % right-hand side. But if it already starts with a unary minus, we can
     % simply remove it rather than doing a double negation:
     % [TODO: Remove double UMINUS]
-    newTree = struct('method', 'minus', 'numArgs', 2, ...
-        'left', rhs{wCounter}, 'right', newTree);
+    newTree.right = newTree;
+    newTree.method = 'minus';
+    newTree.numArgs = 2;
+    newTree.left = rhs{wCounter};
+%     newTree = struct('method', 'minus', 'numArgs', 2, ...
+%         'left', rhs{wCounter}, 'right', newTree);
     % Convert current expression to infix form:
     [infix, varArray] = ...
         treeVar.tree2infix(newTree, maxDerLoc, indexStart);

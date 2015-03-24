@@ -47,7 +47,7 @@ function [out, varCounter, varArray] = ...
 % a struct, we've arrived at a leaf of the tree, which will either be a scalar
 % or a CHEBFUN variable. Indicate this by setting NUMARGS = -1, which allows us
 % to use the switch statement below.
-if ( isstruct(tree) )
+if ( isa(tree, 'treeVar') )
     % Store the number of arguments.
     numArgs = tree.numArgs;
 else
@@ -87,7 +87,7 @@ switch numArgs
             return
         end
         
-        if ( isstruct(tree.left) )
+        if ( isa(tree.left, 'treeVar') )
             % Left child node is a tree, convert it recursively to infix form.
             [leftInfix, varCounter, varArray] = ...
                 toInfix(tree.left, eqno, indexStart, varCounter, varArray);
@@ -98,7 +98,7 @@ switch numArgs
                 scalarChebfunInfix(eqno, varCounter, tree.left, varArray);
         end
         
-        if ( isstruct(tree.right) )
+        if ( isa(tree.right, 'treeVar') )
             % Right child node is a tree, convert it recursively to infix form.
             [rightInfix, varCounter, varArray] = ...
                 toInfix(tree.right, eqno, indexStart, varCounter, varArray);
