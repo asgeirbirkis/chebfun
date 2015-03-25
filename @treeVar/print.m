@@ -1,16 +1,13 @@
-function s = printTree(tree, indentStr)
+function s = print(tree, indentStr)
 %PRINTTREE   Print a syntax tree.
 %   Calling sequence:
-%      S = TREEVAR.PRINTTREE(TREE, INDSTR)
+%      S = PRINT(TREE, INDSTR)
 %   where the inputs are:
-%      TREE:   A MATLAB struct, specifying a syntax tree (usually stored in a
-%              TREEVAR)
+%      TREE:   A TREEVAR instance.
 %      INDSTR: A MATLAB string, that governs the indentation when printing the
 %              current node in the syntax tree.
 %   and the output is:
 %      S:      A MATLAB string, which describes the syntax tree.
-%
-%   Usually this method is called from within the TREEVAR/PRINT method.
 %
 %   Example:
 %      % First, define a TREEVAR and carry out some operations:
@@ -18,11 +15,9 @@ function s = printTree(tree, indentStr)
 %      v = cos(u);
 %      w = sin(diff(u));
 %      t = v + w;
-%      % The following are equivalent:
 %      print(t)
-%      treeVar.printTree(t.tree)
 %
-% See also TREEVAR.PRINT.
+% See also TREEVAR.PLOT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -86,13 +81,13 @@ indentStr = [ indentStr, '  ' ];
 switch tree.numArgs
     case 1
         % Printing univariate methods.
-        s = [ s, treeVar.printTree(tree.center, [indentStr, ' ']) ];
+        s = [ s, print(tree.center, [indentStr, ' ']) ];
     
     case 2
         % Printing bivariate methods.       
         if ( isa(tree.left, 'treeVar') )
             % If the left child is a tree, print it recursively:
-            s = [ s, treeVar.printTree(tree.left, [indentStr, '|']) ];
+            s = [ s, print(tree.left, [indentStr, '|']) ];
         elseif ( isnumeric(tree.left) )
             % Left node was a scalar:
             s = [ s, sprintf('%s|--numerical \tValue: %s\n', ...
@@ -104,7 +99,7 @@ switch tree.numArgs
         
         if ( isa(tree.right, 'treeVar') )
             % If the right child is a tree, print it recursively:
-            s = [ s, treeVar.printTree(tree.right, [indentStr, ' ']) ];
+            s = [ s, print(tree.right, [indentStr, ' ']) ];
         elseif ( isnumeric(tree.right) )
             % Right node is a scalar:
             s = [ s, sprintf('%s|--numerical \tValue: %s\n', ...

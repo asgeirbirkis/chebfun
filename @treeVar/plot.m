@@ -1,12 +1,9 @@
-function plotTree(tree)
+function plot(tree)
 %PLOTTREE   Plot a syntax tree (as stored in a TREEVAR object).
 %   Calling sequence:
-%      TREEVAR.PLOTTREE(TREE)
+%      PLOT(TREE)
 %   where the input is:
-%      TREE:   A MATLAB struct, describing the syntax tree of a mathematical
-%              expression.
-%
-%   Usually, this method is called from within the TREEVAR plot() method.
+%      TREE:   A TREEVAR instance.
 %
 %   Example:
 %      % First, define a TREEVAR and carry out some operations:
@@ -14,11 +11,9 @@ function plotTree(tree)
 %      v = cos(u);
 %      w = sin(diff(u));
 %      t = v + w;
-%      % The following are equivalent:
 %      plot(t)
-%      treeVar.plotTree(t.tree)
 %
-% See also TREEVAR.PLOT.
+% See also TREEVAR.PRINT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -30,17 +25,17 @@ deltax = .25;
 
 % Layout the tree. The returned tree will store information about where
 % it's supposed to be plotted.
-tree = layoutNodes(tree, startx, deltax, tree.height + 1, tree.height + 1); 
+layoutTree = layoutNodes(tree, startx, deltax, tree.height + 1, tree.height + 1); 
 
 % Create a figure, and plot the first node
-plot(tree.x, tree.y, 'bo');
+plot(layoutTree.x, layoutTree.y, 'bo');
 hold on
 
 % Maximum differential orders that appear in the tree
 maxDiffOrder = tree.diffOrder;
 
 % Start the recursive calls to the actual plotting method:
-plotTreePlot(tree, maxDiffOrder);
+plotTreePlot(layoutTree, tree, maxDiffOrder);
 
 % Some final massaging of the figure:
 xlim([0, 1])
@@ -52,7 +47,7 @@ title('Function evaluation tree')
 end
 
 
-function tree = layoutNodes(tree, treex, deltax, currHeight, maxHeight)
+function layoutTree = layoutNodes(tree, treex, deltax, currHeight, maxHeight)
 %LAYOUTNODES   Return coordinates for where to plot nodes of syntax trees.
 
 if ( ~isa(tree, 'treeVar') )
@@ -65,46 +60,48 @@ if ( ~isa(tree, 'treeVar') )
     
     % Create a dummy tree, needed for storing the information required when the
     % tree is plotted:
-    tree = [];
-    tree.numArgs = 0;
+    layoutTree = [];
+    layoutTree.numArgs = 0;
     if ( isnumeric(treeVal) )
-        tree.method = num2str(treeVal, '%2.2f');
+        layoutTree.method = num2str(treeVal, '%2.2f');
     else
-        tree.method = 'chebfun';
+        layoutTree.method = 'chebfun';
     end
     
     % Store coordinates where the node should be plotted:
-    tree.y = currHeight/(maxHeight+1);
-    tree.x = treex;
+    layoutTree.y = currHeight/(maxHeight+1);
+    layoutTree.x = treex;
     
     % Scalars and CHEBFUNS have zero diffOrders.
-    tree.diffOrder = 0;
+    layoutTree.diffOrder = 0;
+    layoutTree.numArgs = 0;
     return
 end
 
 % Store coordinates where the current node should be plotted:
-tree.y = currHeight/(maxHeight+1);
-tree.x = treex;
-    
+layoutTree.y = currHeight/(maxHeight+1);
+layoutTree.x = treex;
+layoutTree.numArgs = tree.numArgs;
+layoutTree.method = tree.method;    
 % Lay out nodes recursively
 switch tree.numArgs
     case 0
         % Do nothing        
     case 1
         % Current tree has one child:
-        tree.center = layoutNodes(tree.center, treex, deltax, ...
+        layoutTree.center = layoutNodes(tree.center, treex, deltax, ...
             currHeight - 1, maxHeight);
     case 2
         % Current tree has two childs:
-        tree.left  = layoutNodes(tree.left, treex - deltax, ...
+        layoutTree.left  = layoutNodes(tree.left, treex - deltax, ...
             deltax/2, currHeight - 1, maxHeight);
-        tree.right  = layoutNodes(tree.right, treex + deltax, ...
+        layoutTree.right  = layoutNodes(tree.right, treex + deltax, ...
             deltax/2, currHeight - 1, maxHeight);
 end
 
 end
 
-function plotTreePlot(tree, maxDiffOrder)
+function plotTreePlot(layoutTree, tree, maxDiffOrder)
 %PLOTREEPLOT   The actual plotting of the syntax tree.
 
 % Specify 20 different colours, so that each variable appearing in the tree can
@@ -117,37 +114,37 @@ colours = [160, 255, 0; 27, 244, 125; 0, 185, 140; 49, 105, 255; ...
 numCols = size(colours, 1);
 
 % Plot, depending on the number of arguments that the method has.
-switch tree.numArgs
+switch layoutTree.numArgs
     case 0
         % Plot the constructor leaves in different colours.
-        if ( strcmp(tree.method, 'constr') )
+        if ( strcmp(layoutTree.method, 'constr') )
             varID = find(tree.ID == 1);
             colID = colours(mod(varID, numCols) + 1, :);
-            plot(tree.x, tree.y, 'o', 'color', colID);
-            plot(tree.x, tree.y, '.', 'markersize', 20, 'color', colID);
+            plot(layoutTree.x, layoutTree.y, 'o', 'color', colID);
+            plot(layoutTree.x, layoutTree.y, '.', 'markersize', 20, 'color', colID);
         end
         
     case 1
         % Plot syntax tree for univariate methods:
-        plot(tree.center.x, tree.center.y, 'bo');
-        plot([tree.x tree.center.x], [tree.y tree.center.y], '-')
-        plotTreePlot(tree.center, maxDiffOrder)
+        plot(layoutTree.center.x, layoutTree.center.y, 'bo');
+        plot([layoutTree.x layoutTree.center.x], [layoutTree.y layoutTree.center.y], '-')
+        plotTreePlot(layoutTree.center, tree.center, maxDiffOrder)
     
     case 2
         % Plot syntax tree for bivariate methods:        
         % Plot left sub-tree.
-        plot(tree.left.x, tree.left.y, 'o');
-        plot([tree.x tree.left.x], [tree.y tree.left.y], '-')
-        plotTreePlot(tree.left, maxDiffOrder)
+        plot(layoutTree.left.x, layoutTree.left.y, 'o');
+        plot([layoutTree.x layoutTree.left.x], [layoutTree.y layoutTree.left.y], '-')
+        plotTreePlot(layoutTree.left, tree.left, maxDiffOrder)
         
         % Plot right sub-tree.
-        plot(tree.right.x, tree.right.y, 'o');
-        plot([tree.x tree.right.x], [tree.y tree.right.y], '-')
-        plotTreePlot(tree.right, maxDiffOrder)
+        plot(layoutTree.right.x, layoutTree.right.y, 'o');
+        plot([layoutTree.x layoutTree.right.x], [layoutTree.y layoutTree.right.y], '-')
+        plotTreePlot(layoutTree.right, tree.right, maxDiffOrder)
 end
 
 % Add the method name to the plot:
-if ( strcmp(tree.method, 'constr') )
+if ( strcmp(layoutTree.method, 'constr') )
     % If we're at a constructor leaf, change the text slightly:
     if ( length(tree.ID) == 1)
         % Scalar case.
@@ -156,9 +153,9 @@ if ( strcmp(tree.method, 'constr') )
         % Systems case, print u and the variable number:
         varString = sprintf('u%i', find(tree.ID == 1));
     end
-    text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none')
+    text(layoutTree.x + 0.02, layoutTree.y - 0.01, varString, 'Interpreter', 'none')
 else
-    text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none')
+    text(layoutTree.x + 0.02, layoutTree.y - 0.01, layoutTree.method, 'Interpreter', 'none')
 end
 
 end

@@ -1,5 +1,5 @@
 function pass = test_plotTree(~)
-%TEST_PLOTTREE   Do TREEVAR computations, check that PLOTTREE works.
+%TEST_PLOT   Do TREEVAR computations, check that PLOT works.
 
 hfig = figure('Visible', 'off');
 
@@ -10,20 +10,17 @@ w = sin(u);
 t = v + w;
 
 % Call both the static and non-static version of the plotting methods.
-pass(1) = doesNotCrash(@() plotTree(t.tree));
-pass(2) = doesNotCrash(@() plot(t));
+pass(1) = doesNotCrash(@() plot(t));
 
 %% Introducing differentiation
 u = treeVar();
 myfun = @(u) 2 + diff(u,2);
 s = myfun(u);
-pass(3) = doesNotCrash(@() treeVar.plotTree(s.tree));
-pass(4) = doesNotCrash(@() plot(s));
+pass(2) = doesNotCrash(@() plot(s));
 
 %% Nested differentiation
 s2 = diff(diff(u)) + diff(u) + u;
-pass(5) = doesNotCrash(@() treeVar.plotTree(s2.tree));
-pass(6) = doesNotCrash(@() plot(s2));
+pass(3) = doesNotCrash(@() plot(s2));
 
 close(hfig)
 end

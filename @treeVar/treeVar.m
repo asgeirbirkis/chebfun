@@ -417,14 +417,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
             h.domain = updateDomain(f, g);
         end
-        
-        function plot(treeVar)
-            %PLOT   Plot of a TREEVAR syntax tree.
-            %
-            % See also TREEVAR.PLOTTREE.
-            treeVar.plotTree(treeVar);
-        end
-        
+                
         function h = plus(f, g)
             %+   Addition of TREEVAR objects.
 
@@ -459,13 +452,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 h.ID = f.ID | g.ID;
             end
             h.domain = updateDomain(f, g);
-        end
-        
-        function s = print(treeVar)
-            %PRINT   Text rendering of a TREEVAR syntax tree.
-            %
-            % See also TREEVAR.PRINTTREE.
-            s = treeVar.printTree(treeVar);
         end
         
         function h = rdivide(f, g)
@@ -616,9 +602,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         % Plot a syntax tree
         plotTree(tree, varargin)
-        
-        % Print a syntax tree
-        s = printTree(tree, ind, indStr)
         
         % Returns how the results of evaluating BCs should be sorted
         idx = sortConditions(funIn, domain)
