@@ -204,8 +204,7 @@ for wCounter = 1:length(fevalResult)
     newTreeTemp.method = 'minus';
     newTreeTemp.numArgs = 2;
     newTreeTemp.left = rhs{wCounter};
-%     newTree = struct('method', 'minus', 'numArgs', 2, ...
-%         'left', rhs{wCounter}, 'right', newTree);
+    
     % Convert current expression to infix form:
     [infix, varArray] = ...
         tree2infix(newTreeTemp, maxDerLoc, indexStart);
