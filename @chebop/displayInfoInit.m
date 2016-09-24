@@ -24,7 +24,7 @@ plotMode = pref.plotting;
 if ( strcmpi(display, 'iter') )
     
     % Show info depending on whether we are running in damped mode or not
-    initString = ['Iter.   || du ||   Contraction    ', ...
+    initString = ['Iter.   || N(u) ||   Contraction    ', ...
             'stepsize   len(du)   len(u)'];
 
     % Print to the command window

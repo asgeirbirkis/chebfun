@@ -197,10 +197,10 @@ while ( ~terminate )
     
     % Print info to command window, and/or show plot of progress
     [displayTimer, stopReq] = displayInfo('iter', u, delta, newtonCounter, ...
-        normDelta, cFactor, length(delta{1}), lambda, len, displayFig, ...
+        norm(feval(N,u),'fro'), cFactor, length(delta{1}), lambda, len, displayFig, ...
         displayTimer, pref);
     
-    if ( errEst < bvpTolNonlinear )  
+    if ( norm(feval(N,u),'fro') < pref.resTol )  
         % Sweet, we have converged!      
         success = 1;
     elseif ( newtonCounter > maxIter )
@@ -231,7 +231,7 @@ errEstBC = normBCres(N, u, x, diffOrder, pref);
 % Print information depending on why we stopped the Newton iteration.
 if ( success )
     % Show final information.
-    displayInfo('final', u, delta, newtonCounter, errEst, errEstBC, ...
+    displayInfo('final', u, delta, newtonCounter, norm(feval(N,u),'fro'), errEstBC, ...
         displayFig, displayTimer, pref)
 elseif ( maxIterExceeded )
     warning('CHEBFUN:CHEBOP:solvebvpNonlinear:maxIter',...

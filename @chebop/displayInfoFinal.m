@@ -53,7 +53,7 @@ if ( strcmp(display,'iter') || strcmp(display,'final') )
     fprintf('Discretization basis used: %s. \n', discString);
     
     % Print info about the final error estimates.
-    fprintf(['Final error estimate: %.2e (differential equation) \n' ...
+    fprintf(['Final norm of residual: %.2e (differential equation) \n' ...
         '%30.2e (boundary conditions). \n\n'], errEstDE, errEstBC);
 end
 

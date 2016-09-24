@@ -299,6 +299,8 @@ classdef cheboppref < chebpref
                 prefList.minDimension);
             fprintf([padString('    plotting:') '%s\n'], ...
                 prefList.plotting);
+            fprintf([padString('    resTol:') '%s\n'], ...
+                prefList.resTol);
             fprintf([padString('    vectorize:') '%i\n'], ...
                 prefList.vectorize);
        end
@@ -470,6 +472,7 @@ classdef cheboppref < chebpref
             factoryPrefs.maxIter = 25;
             factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
+            factoryPrefs.resTol = 1e-10;
             factoryPrefs.vectorize = true;
         end
         
